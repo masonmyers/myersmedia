@@ -39,7 +39,7 @@
 
 						<section>
 								<h3>Form</h3>
-								<form method="post" action="https://script.google.com/macros/s/AKfycbzs-ZozbKdwXp6DBGvjKe9WHKmVPpP9YevnR-ivdoMFNKdVJjXIJaR34t7ZRfwKiVw0/exec">
+								<form id="contact-form" method="post" action="#">
 									<div class="row gtr-uniform gtr-50">
 										<div class="col-6 col-12-xsmall">
 											<input type="text" name="name" id="name" value="" placeholder="Name" />
@@ -75,6 +75,60 @@
 									</div>
 								</form>
 							</section>
+						<script>
+        					// 1. Get the form element
+        					const form = document.getElementById('contact-form');
+        
+        					// 2. Get the status message element
+       						const formStatus = document.getElementById('message');
+        
+        					// 3. Get the submit button
+       						const submitButton = document.getElementById('submit');
+
+        					// 4. Add a 'submit' event listener to the form
+        					form.addEventListener('submit', function(e) {
+            
+            					// 5. THIS IS THE KEY: Prevent the default form submission (the redirect)
+            					e.preventDefault();
+
+            					// --- Show loading state ---
+            					submitButton.disabled = true;
+            					formStatus.innerHTML = "Sending...";
+
+            					// 6. Paste your Google Apps Script Web App URL here
+            					const scriptURL = 'YOUR_WEB_APP_URL_GOES_HERE';
+
+            					// 7. Create a FormData object from the form
+            					const formData = new FormData(form);
+
+            					// 8. Use fetch() to send the data asynchronously
+            					fetch(scriptURL, { 
+                					method: 'POST', 
+                					body: formData 
+            					})
+            					.then(response => response.json()) // Get the JSON response from Apps Script
+            					.then(data => {
+                					if (data.result === 'success') {
+                    					// THIS IS YOUR REQUEST: Reset the form fields
+                    					form.reset(); 
+                    					formStatus.innerHTML = "Success! Your message was sent.";
+                    
+                					} else {
+                    					// Handle the error from Apps Script
+                    					formStatus.innerHTML = "Error: " + data.message;
+									}
+            					})
+            					.catch(error => {
+                					// Handle network errors
+                					console.error('Error!', error.message);
+                					formStatus.innerHTML = "An error occurred. Please try again.";
+            					})
+            					.finally(() => {
+                					// Re-enable the submit button
+                					submitButton.disabled = false; 
+            					});
+        				});
+    				</script>
 
 					</div>
 				</div>
@@ -110,6 +164,7 @@
 	</body>
 
 </html>
+
 
 
 
