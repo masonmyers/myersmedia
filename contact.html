@@ -10,8 +10,7 @@
 	<body class="is-preload">
 		<div id="page-wrapper">
 
-			<!-- Header -->
-				<header id="header">
+			<header id="header">
 					<h1 id="logo"><a href="index.html">Myers Media &trade;</a></h1>
 					<nav id="nav">
 						<ul>
@@ -29,8 +28,7 @@
 					</nav>
 				</header>
 
-			<!-- Main -->
-				<div id="main" class="wrapper style1">
+			<div id="main" class="wrapper style1">
 					<div class="container">
 						<header class="major">
 							<h2>Contact Us</h2>
@@ -39,13 +37,13 @@
 
 						<section>
 								<h3>Form</h3>
-								<form id="contact-form" method="post" action="#">
+								<form id="contact-form">
 									<div class="row gtr-uniform gtr-50">
 										<div class="col-6 col-12-xsmall">
-											<input type="text" name="name" id="name" value="" placeholder="Name" />
+											<input type="text" name="name" id="name" value="" placeholder="Name" required />
 										</div>
 										<div class="col-6 col-12-xsmall">
-											<input type="email" name="email" id="email" value="" placeholder="Email" />
+											<input type="email" name="email" id="email" value="" placeholder="Email" required />
 										</div>
 										<div class="col-12">
 											<select name="category" id="category">
@@ -57,22 +55,24 @@
 											</select>
 										</div>
 										<div class="col-12">
-											<textarea name="message" id="message" placeholder="Enter your message" rows="6"></textarea>
+											<textarea name="message" id="message" placeholder="Enter your message" rows="6" required></textarea>
 										</div>
 										<div class="col-12">
 											<ul class="actions">
-												<li><input type="submit" value="Submit" class="primary" /></li>
+												<li><input type="submit" id="submit-button" value="Submit" class="primary" /></li>
 											</ul>
 										</div>
 									</div>
 								</form>
+								
+								<div id="form-status" style="margin-top: 15px; font-weight: bold;"></div>
+								
 							</section>
 
 					</div>
 				</div>
 
-			<!-- Footer -->
-				<footer id="footer">
+			<footer id="footer">
 					<ul class="icons">
 						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
 						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
@@ -89,8 +89,7 @@
 
 		</div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/jquery.scrolly.min.js"></script>
 			<script src="assets/js/jquery.dropotron.min.js"></script>
 			<script src="assets/js/jquery.scrollex.min.js"></script>
@@ -99,15 +98,53 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
-	</body>
+			<script>
+				const form = document.getElementById('contact-form');
+				const formStatus = document.getElementById('form-status');
+				const submitButton = document.getElementById('submit-button');
+
+				form.addEventListener('submit', function(e) {
+					e.preventDefault();
+
+					const scriptURL = 'URL'; 
+
+					if (!scriptURL.startsWith("https://")) {
+						formStatus.innerHTML = "Error: Please paste your Google Apps Script URL.";
+						formStatus.style.color = "red";
+						return;
+					}
+
+					submitButton.disabled = true;
+					formStatus.innerHTML = "Sending...";
+					formStatus.style.color = "black";
+
+					const formData = new FormData(form);
+
+					fetch(scriptURL, { 
+						method: 'POST', 
+						body: formData 
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.result === 'success') {
+							form.reset();
+							formStatus.innerHTML = "Success! Your message was sent.";
+							formStatus.style.color = "green";
+						} else {
+							formStatus.innerHTML = "Error: " + data.message;
+							formStatus.style.color = "red";
+						}
+					})
+					.catch(error => {
+						console.error('Error!', error.message);
+						formStatus.innerHTML = "An error occurred. Please try again.";
+						formStatus.style.color = "red";
+					})
+					.finally(() => {
+						submitButton.disabled = false;
+					});
+				});
+			</script>
+			</body>
 
 </html>
-
-
-
-
-
-
-
-
-
