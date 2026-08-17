@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       // Force the wait to get the token
-      recaptchaToken = await grecaptcha.enterprise.execute("6LfmhIotAAAAALxF99_Gw1UdXuJJerqU4XHP0SZw", { action: "submit_form" });
+      recaptchaToken = await grecaptcha.enterprise.execute("6LeCnootAAAAALlaIyzbwRQHKXlcAjwJs-1LLWN6", { action: "submit_form" });
       
       if (!recaptchaToken) {
         setStatus("Could not generate a security token. Please try again.", "error");
